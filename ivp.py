@@ -1,3 +1,4 @@
+import numpy as np
 class Solution:
     
     def __init__(self, n=1, x0=1, y0=0.5, X=9):
@@ -66,6 +67,10 @@ class Solution:
     def exact(self):
         self.y_grid_exact.clear()
         for x_i in self.x_grid:
+            if x_i == 0.0:
+                self.y_grid_exact.append(np.nan)
+                print('sas')
+                continue
             self.y_grid_exact.append(1/(x_i+1))
 
     def euler(self):

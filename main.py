@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QCheckBox, QSlider, QLabel
-from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMenu, QVBoxLayout, QSizePolicy, QMessageBox, QWidget, QPushButton, QCheckBox, QSlider, QLabel, QLineEdit, QErrorMessage
+from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 
 import random
@@ -29,7 +29,10 @@ class App(QMainWindow):
         self.check_rk = QCheckBox('Runge-Kutta approx plot', self)
         self.accuracy_label = QLabel('Accuracy (N): 50', self)
         self.accuracy_slider = QSlider(Qt.Horizontal, self)
-        self.sol = Solution(n=100)
+        self.x0 = QLineEdit(self)
+        self.y0 = QLineEdit(self)
+        self.X = QLineEdit(self)
+        self.sol = Solution()
         self.canvas = PlotCanvas(self, width=5, height=4)
         self.initUI()
 
@@ -59,17 +62,57 @@ class App(QMainWindow):
         self.accuracy_label.move(510, 160)
         self.accuracy_label.resize(200, 25)
 
-        self.accuracy_slider.setRange(1, 100)
+        self.accuracy_slider.setRange(1, 500)
         self.accuracy_slider.setValue(50)
         self.accuracy_slider.setTickInterval(1)
         self.accuracy_slider.move(510, 180)
         self.accuracy_slider.resize(150, 50)
         self.accuracy_slider.valueChanged.connect(self.accuracy_change)
 
+        validator = QRegExpValidator(QRegExp('^\-?\d{1,3}(\.\d{1,3})*$'))
+
+        self.x0.setAlignment(Qt.AlignLeft)
+        self.x0.setMaxLength(7)
+        self.x0.setText('1')
+        self.x0.setValidator(validator)
+        lx0 = QLabel('X0: ', self)
+        lx0.move(510, 230)
+        lx0.resize(20, 20)
+        self.x0.move(550, 230)
+        self.x0.resize(75, 20)
+
+        self.y0.setAlignment(Qt.AlignLeft)
+        self.y0.setMaxLength(7)
+        self.y0.setText('0.5')
+        self.y0.setValidator(validator)
+        ly0 = QLabel('Y0: ', self)
+        ly0.move(510, 260)
+        ly0.resize(20, 20)
+        self.y0.move(550, 260)
+        self.y0.resize(75, 20)
+
+        self.X.setAlignment(Qt.AlignLeft)
+        self.X.setMaxLength(7)
+        self.X.setText('9')
+        self.X.setValidator(validator)
+        lX = QLabel('X: ', self)
+        lX.move(510, 290)
+        lX.resize(20, 20)
+        self.X.move(550, 290)
+        self.X.resize(75, 20)
+
         self.show()
 
     def draw(self):
+        x0 = float(self.x0.text())
+        y0 = float(self.y0.text())
+        X = float(self.X.text())
+        if x0 > X:
+            error_dialog = QErrorMessage(self)
+            error_dialog.showMessage('X0 should be less than X')
+            return
         self.canvas.clr()
+        self.sol.set_accuracy(n=self.accuracy_slider.value(), x0=x0, y0=y0, X=X)
         if self.check_exact.isChecked():
             self.canvas.plot(self.sol.get_x_grid(), self.sol.get_y_grid_exact(), color='b-')
         if self.check_e.isChecked():
