@@ -6,7 +6,7 @@ class ExactGraph(Graph):
 
     def __calc(self):
         for x_i in self.__xgrid:
-            self.__ygrid.append(self.__func)
+            self.__ygrid.append(self.__func(x_i))
 
 
 
