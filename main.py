@@ -10,7 +10,7 @@ from PyQt5.QtCore import *
 
 import random
 
-from ivp import Solution
+from classes import *
 
 
 class App(QMainWindow):
@@ -23,16 +23,26 @@ class App(QMainWindow):
         self.width = 700
         self.height = 400
         self.button = QPushButton('Draw plot', self)
-        self.check_exact = QCheckBox('Exact solution plot', self)
-        self.check_e = QCheckBox('Euler approx plot', self)
-        self.check_eim = QCheckBox('Euler improved approx plot', self)
-        self.check_rk = QCheckBox('Runge-Kutta approx plot', self)
+        self.check_box_dict = {
+            'exact': QCheckBox('Exact solution plot', self),
+            'euler': QCheckBox('Euler approx plot', self),
+            'eim': QCheckBox('Euler improved approx plot', self),
+            'rk': QCheckBox('Runge-Kutta approx plot', self)}
         self.accuracy_label = QLabel('Accuracy (N): 50', self)
         self.accuracy_slider = QSlider(Qt.Horizontal, self)
         self.x0 = QLineEdit(self)
         self.y0 = QLineEdit(self)
         self.X = QLineEdit(self)
-        self.sol = Solution()
+        self.graph_dict = {
+            self.check_box_dict['exact']: ExactGraph(),
+            self.check_box_dict['euler']: EulerGraph(),
+            self.check_box_dict['eim']: EulerImGraph(),
+            self.check_box_dict['rk']: RungeKuttaGraph()}
+        self.graph_colors_dict = {
+            self.check_box_dict['exact']: 'b-',
+            self.check_box_dict['euler']: 'r-',
+            self.check_box_dict['eim']: 'y-',
+            self.check_box_dict['rk']: 'g-'}
         self.canvas = PlotCanvas(self, width=5, height=4)
         self.initUI()
 
@@ -47,17 +57,17 @@ class App(QMainWindow):
         self.button.move(500, 0)
         self.button.resize(200, 50)
 
-        self.check_exact.move(505, 50)
-        self.check_exact.resize(200, 25)
+        self.check_box_dict['exact'].move(505, 50)
+        self.check_box_dict['exact'].resize(200, 25)
 
-        self.check_e.move(505, 75)
-        self.check_e.resize(200, 25)
+        self.check_box_dict['euler'].move(505, 75)
+        self.check_box_dict['euler'].resize(200, 25)
 
-        self.check_eim.move(505, 100)
-        self.check_eim.resize(200, 25)
+        self.check_box_dict['eim'].move(505, 100)
+        self.check_box_dict['eim'].resize(200, 25)
 
-        self.check_rk.move(505, 125)
-        self.check_rk.resize(200, 25)
+        self.check_box_dict['rk'].move(505, 125)
+        self.check_box_dict['rk'].resize(200, 25)
 
         self.accuracy_label.move(510, 160)
         self.accuracy_label.resize(200, 25)
@@ -69,7 +79,7 @@ class App(QMainWindow):
         self.accuracy_slider.resize(150, 50)
         self.accuracy_slider.valueChanged.connect(self.accuracy_change)
 
-        validator = QRegExpValidator(QRegExp('^\-?\d{1,3}(\.\d{1,3})*$'))
+        validator = QRegExpValidator(QRegExp(r'^\-?\d{1,3}(\.\d{1,3})*$'))
 
         self.x0.setAlignment(Qt.AlignLeft)
         self.x0.setMaxLength(7)
@@ -112,22 +122,23 @@ class App(QMainWindow):
             error_dialog.showMessage('X0 should be less than X')
             return
         self.canvas.clr()
-        self.sol.set_accuracy(n=self.accuracy_slider.value(), x0=x0, y0=y0, X=X)
-        if self.check_exact.isChecked():
-            self.canvas.plot(self.sol.get_x_grid(), self.sol.get_y_grid_exact(), color='b-')
-        if self.check_e.isChecked():
-            self.canvas.plot(self.sol.get_x_grid(), self.sol.get_y_grid_e())
-        if self.check_eim.isChecked():
-            self.canvas.plot(self.sol.get_x_grid(), self.sol.get_y_grid_eim())
-        if self.check_rk.isChecked():
-            self.canvas.plot(self.sol.get_x_grid(), self.sol.get_y_grid_rk())
+        for graph in self.graph_dict.values():
+            graph.recalculate(
+                n=self.accuracy_slider.value(), x0=x0, y0=y0, X=X)
+        
+        for check in self.check_box_dict.values():
+            if check.isChecked():
+                self.canvas.plot(
+                    self.graph_dict[check].get_xgrid(),
+                    self.graph_dict[check].get_ygrid(),
+                    color=self.graph_colors_dict[check])
     
     def accuracy_change(self):
         self.accuracy_label.setText('Accuracy (N): ' + str(self.accuracy_slider.value()) )
 
 class PlotCanvas(FigureCanvas):
 
-    def __init__(self, parent=None, width=5, height=4, dpi=100, sol=Solution()):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
 

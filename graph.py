@@ -1,10 +1,11 @@
-import abc
+from abc import ABC, abstractmethod
 
-class Graph(abc.ABC):
-    def __init__(self, x0=1, X=9, n=10):
+class Graph(ABC):
+    def __init__(self, x0=1, y0=0.5, X=9, n=10):
         self.__x0 = x0
         self.__X = X
         self.__n = n
+        self.__y0 = y0
 
         self.__xgrid = []
         self.__ygrid = []
@@ -13,15 +14,17 @@ class Graph(abc.ABC):
             self.__xgrid.append(x0)
             x0 += self.__grid_step
         self.__calc()
+        super().__init__()
 
-    @abc.abstractmethod
+    @abstractmethod
     def __calc(self):
-        raise NotImplementedError
+        pass
 
-    def recalculate(self, x0, X, n):
+    def recalculate(self, x0, y0, X, n):
         self.__x0 = x0
         self.__X = X
         self.__n = n
+        self.__y0 = y0
 
         self.__xgrid.clear()
         self.__ygrid.clear()
@@ -36,17 +39,3 @@ class Graph(abc.ABC):
 
     def get_ygrid(self):
         return self.__ygrid
-
-class GraphApprox(Graph):
-
-    def __init__(self, x0=1, y0=0.5, X=9, n=10):
-        self.__y0 = y0
-        Graph.__init__(x0, X, n)
-
-    def recalculate(self, x0, y0, X, n):
-        self.__y0 = y0
-        super.recalculate(x0, X, n)
-
-    @abc.abstractmethod
-    def __calc(self):
-        raise NotImplementedError
