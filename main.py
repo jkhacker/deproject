@@ -216,6 +216,7 @@ class PlotCanvas(FigureCanvas):
     def plot(self, xgrid, ygrid, label, color):
         self.ax.plot(xgrid, ygrid, color, label=label)
         self.ax.legend(fontsize='small')
+        self.ax.grid()
         self.draw()
 
 
