@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 
 class Graph(ABC):
-    def __init__(self, x0=1, y0=0.5, X=9, n=10):
+    def __init__(self, name, x0=1, y0=0.5, X=9, n=10):
         self.__x0 = x0
         self.__X = X
         self.__n = n
         self.__y0 = y0
+        self.__name = name
 
         self.__xgrid = []
         self.__ygrid = []
@@ -34,8 +35,5 @@ class Graph(ABC):
             x0 += self.__grid_step
         self.__calc()
 
-    def get_xgrid(self):
-        return self.__xgrid
-
-    def get_ygrid(self):
-        return self.__ygrid
+    def get_grid(self):
+        return self.__xgrid, self.__ygrid, self.__name

@@ -7,6 +7,9 @@ class ExactGraph(Graph):
             res =  1/(c*x+1)
         except (OverflowError, ZeroDivisionError) as e:
             res = np.nan
+        threshold = 100
+        res = np.ma.masked_less(res, -1*threshold) 
+        res = np.ma.masked_greater(res, threshold)
         return res
 
     def _Graph__calc(self):
@@ -20,13 +23,15 @@ class EulerGraph(Graph):
             res = (y**2 - y)/x
         except (OverflowError, ZeroDivisionError) as e:
             res = np.nan
+        threshold = 100
+        res = np.ma.masked_less(res, -1*threshold)
+        res = np.ma.masked_greater(res, threshold)
         return res
 
     def _Graph__calc(self):
         y_i = self._Graph__y0
         for x_i in self._Graph__xgrid:
             self._Graph__ygrid.append(y_i)
-            print(x_i, y_i)
             y_i = y_i + self._Graph__grid_step*self.__func(x_i, y_i)
 
 class EulerImGraph(Graph):
@@ -35,6 +40,9 @@ class EulerImGraph(Graph):
             res = (y**2 - y)/x
         except (OverflowError, ZeroDivisionError) as e:
             res = np.nan
+        threshold = 100
+        res = np.ma.masked_less(res, -1*threshold)
+        res = np.ma.masked_greater(res, threshold)
         return res
 
     def _Graph__calc(self):
@@ -54,6 +62,9 @@ class RungeKuttaGraph(Graph):
             res = (y**2 - y)/x
         except (OverflowError, ZeroDivisionError) as e:
             res = np.nan
+        threshold = 100
+        res = np.ma.masked_less(res, -1*threshold)
+        res = np.ma.masked_greater(res, threshold)
         return res
 
     def _Graph__calc(self):

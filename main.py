@@ -34,10 +34,10 @@ class App(QMainWindow):
         self.y0 = QLineEdit(self)
         self.X = QLineEdit(self)
         self.graph_dict = {
-            self.check_box_dict['exact']: ExactGraph(),
-            self.check_box_dict['euler']: EulerGraph(),
-            self.check_box_dict['eim']: EulerImGraph(),
-            self.check_box_dict['rk']: RungeKuttaGraph()}
+            self.check_box_dict['exact']: ExactGraph('Exact solution'),
+            self.check_box_dict['euler']: EulerGraph('Euler approximation'),
+            self.check_box_dict['eim']: EulerImGraph('Euler improved approximation'),
+            self.check_box_dict['rk']: RungeKuttaGraph('Runge-Kutta approximation')}
         self.graph_colors_dict = {
             self.check_box_dict['exact']: 'b-',
             self.check_box_dict['euler']: 'r-',
@@ -128,10 +128,12 @@ class App(QMainWindow):
         
         for check in self.check_box_dict.values():
             if check.isChecked():
+                xgrid, ygrid, name = self.graph_dict[check].get_grid()
                 self.canvas.plot(
-                    self.graph_dict[check].get_xgrid(),
-                    self.graph_dict[check].get_ygrid(),
-                    color=self.graph_colors_dict[check])
+                    xgrid,
+                    ygrid,
+                    name,
+                    self.graph_colors_dict[check])
     
     def accuracy_change(self):
         self.accuracy_label.setText('Accuracy (N): ' + str(self.accuracy_slider.value()) )
@@ -157,8 +159,9 @@ class PlotCanvas(FigureCanvas):
         self.ax.set_title('y\'=(y^2 - y)/x')
         self.draw()
 
-    def plot(self, x_grid, y_grid, color='r-'):
-        self.ax.plot(x_grid, y_grid, color)
+    def plot(self, xgrid, ygrid, label, color):
+        self.ax.plot(xgrid, ygrid, color, label=label)
+        self.ax.legend()
         self.draw()
 
 

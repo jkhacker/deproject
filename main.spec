@@ -1,0 +1,14 @@
+block_cipher = None
+a = Analysis(['main.py'],
+     pathex=[],
+     binaries=None,
+     datas=None,
+     hiddenimports=["matplotlib", "PyQt5"],
+     hookspath=None,
+     runtime_hooks=None,
+     excludes=None,
+     cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data,
+     cipher=block_cipher)
+exe = EXE(pyz,... )
+coll = COLLECT(...)
