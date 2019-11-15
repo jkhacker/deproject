@@ -77,3 +77,18 @@ class RungeKuttaGraph(Graph):
             k4 = self.__func(x_i + self._Graph__grid_step, y_i + k3*self._Graph__grid_step)
             y_i = y_i + self._Graph__grid_step*(k1 + 2*k2 + 2*k3 + k4)/6
 
+class ErrorGraph:
+    def __init__(self, exact_graph, approx_graph, name):
+
+        self.__exact = exact_graph
+        self.__approx = approx_graph
+        self.__name = name
+        self.__ygrid = [x1 - x2 for (x1, x2) in zip(self.__exact.get_grid()[1], self.__approx.get_grid()[1])]
+        self.__xgrid = self.__exact.get_grid()[0]
+    
+    def recalculate(self, *args):
+        self.__ygrid = [x1 - x2 for (x1, x2) in zip(self.__exact.get_grid()[1], self.__approx.get_grid()[1])]
+        self.__xgrid = self.__exact.get_grid()[0]
+
+    def get_grid(self):
+        return self.__xgrid, self.__ygrid, self.__name
