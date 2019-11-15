@@ -142,7 +142,7 @@ class PlotCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        self.axes = fig.add_subplot()
 
         FigureCanvas.__init__(self, fig)
         self.setParent(parent)
@@ -152,16 +152,20 @@ class PlotCanvas(FigureCanvas):
                                    QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
         self.ax = self.figure.add_subplot(111)
+        self.ax.set_xlabel('X axis')
+        self.ax.set_ylabel('Y axis')
         self.ax.set_title('y\'=(y^2 - y)/x')
 
     def clr(self):
         self.ax.clear()
+        self.ax.set_xlabel('X axis')
+        self.ax.set_ylabel('Y axis')
         self.ax.set_title('y\'=(y^2 - y)/x')
         self.draw()
 
     def plot(self, xgrid, ygrid, label, color):
         self.ax.plot(xgrid, ygrid, color, label=label)
-        self.ax.legend()
+        self.ax.legend(fontsize='small')
         self.draw()
 
 
