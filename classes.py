@@ -92,3 +92,33 @@ class ErrorGraph:
 
     def get_grid(self):
         return self.__xgrid, self.__ygrid, self.__name
+
+class TotalErrorGraph:
+    def __init__(self, name, ApproxGraph, AnalGraph, x0=1, y0=0.5, X=9):
+        self.__approx = ApproxGraph('', x0=x0, y0=y0, X=X, n=1)
+        self.__exact = AnalGraph('', x0=x0, y0=y0, X=X, n=1)
+        self.__x0 = x0
+        self.__y0 = y0
+        self.__X = X
+        self.__name = name
+        self.__xgrid = list(range(1, 100))
+        self.__ygrid = []
+    
+    def recalculate(self, x0, y0, X):
+        self.__x0 = x0
+        self.__y0 = y0
+        self.__X = X
+        self.__ygrid.clear()
+        for i in self.__xgrid:
+            self.__approx.recalculate(self.__x0, self.__y0, self.__X, i)
+            _, temp_approx, _ = self.__approx.get_grid()
+            self.__exact.recalculate(self.__x0, self.__y0, self.__X, i)
+            _, temp_exact, _ = self.__exact.get_grid()
+            maxx = -1e10
+            for e, a in zip(temp_exact, temp_approx):
+                if e - a > maxx:
+                    maxx = e - a
+            self.__ygrid.append(maxx)
+    
+    def get_grid(self):
+        return self.__xgrid, self.__ygrid, self.__name

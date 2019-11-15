@@ -31,6 +31,7 @@ class App(QMainWindow):
             'e_euler': QCheckBox('Euler approximation error plot', self),
             'e_eim': QCheckBox('Euler improved approximation error plot', self),
             'e_rk': QCheckBox('Runge-Kutta approximation error plot', self)}
+        self.check_box_total = QCheckBox('Total errors', self)
         self.accuracy_label = QLabel('Accuracy (N): 50', self)
         self.accuracy_slider = QSlider(Qt.Horizontal, self)
         self.x0 = QLineEdit(self)
@@ -48,6 +49,10 @@ class App(QMainWindow):
             self.check_box_dict['e_euler']: ErrorGraph(graph_list[0], graph_list[1], 'Euler error'),
             self.check_box_dict['e_eim']: ErrorGraph(graph_list[0], graph_list[2], 'Euler improved error'),
             self.check_box_dict['e_rk']: ErrorGraph(graph_list[0], graph_list[3], 'Runge-Kutta error')}
+        self.error_dict = {
+            self.check_box_dict['e_euler']: TotalErrorGraph('Euler\'s method', ExactGraph, EulerGraph),
+            self.check_box_dict['e_eim']: TotalErrorGraph('Euler\'s imp. method', ExactGraph, EulerImGraph),
+            self.check_box_dict['e_rk']: TotalErrorGraph('Runge-Kutta method', ExactGraph, RungeKuttaGraph)}
         self.graph_colors_dict = {
             self.check_box_dict['exact']: 'b-',
             self.check_box_dict['euler']: 'r-',
@@ -90,6 +95,10 @@ class App(QMainWindow):
 
         self.check_box_dict['e_rk'].move(505, 125+75)
         self.check_box_dict['e_rk'].resize(275, 25)
+
+        self.check_box_total.move(650, 260+75)
+        self.check_box_total.resize(100, 25)
+        self.check_box_total.toggled.connect(self.totalErrorToggled)
 
         self.accuracy_label.move(510, 160+75)
         self.accuracy_label.resize(200, 25)
@@ -135,6 +144,14 @@ class App(QMainWindow):
 
         self.show()
 
+    def totalErrorToggled(self, flag):
+        self.check_box_dict['exact'].setDisabled(flag)
+        self.check_box_dict['euler'].setDisabled(flag)
+        self.check_box_dict['eim'].setDisabled(flag)
+        self.check_box_dict['rk'].setDisabled(flag)
+        self.accuracy_slider.setValue(100)
+        self.accuracy_slider.setDisabled(flag)
+
     def draw(self):
         x0 = float(self.x0.text())
         y0 = float(self.y0.text())
@@ -147,15 +164,26 @@ class App(QMainWindow):
         for graph in self.graph_dict.values():
             graph.recalculate(
                 x0, y0, X, self.accuracy_slider.value())
-        
-        for check in self.check_box_dict.values():
-            if check.isChecked():
-                xgrid, ygrid, name = self.graph_dict[check].get_grid()
-                self.canvas.plot(
-                    xgrid,
-                    ygrid,
-                    name,
-                    self.graph_colors_dict[check])
+        if self.check_box_total.isChecked():
+            for check in self.error_dict.keys():
+                self.error_dict[check].recalculate(x0, y0, X)
+                if check.isChecked():
+                    xgrid, ygrid, name = self.error_dict[check].get_grid()
+                    self.canvas.plot(
+                        xgrid,
+                        ygrid,
+                        name,
+                        self.graph_colors_dict[check])
+
+        else:
+            for check in self.check_box_dict.values():
+                if check.isChecked():
+                    xgrid, ygrid, name = self.graph_dict[check].get_grid()
+                    self.canvas.plot(
+                        xgrid,
+                        ygrid,
+                        name,
+                        self.graph_colors_dict[check])
     
     def accuracy_change(self):
         self.accuracy_label.setText('Accuracy (N): ' + str(self.accuracy_slider.value()) )
