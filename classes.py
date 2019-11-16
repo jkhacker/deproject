@@ -116,6 +116,7 @@ class TotalErrorGraph:
             _, temp_exact, _ = self.__exact.get_grid()
             maxx = -1e10
             for e, a in zip(temp_exact, temp_approx):
+                print(e, a)
                 if e - a > maxx:
                     maxx = e - a
             self.__ygrid.append(maxx)

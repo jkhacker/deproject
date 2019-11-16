@@ -50,9 +50,9 @@ class App(QMainWindow):
             self.check_box_dict['e_eim']: ErrorGraph(graph_list[0], graph_list[2], 'Euler improved error'),
             self.check_box_dict['e_rk']: ErrorGraph(graph_list[0], graph_list[3], 'Runge-Kutta error')}
         self.error_dict = {
-            self.check_box_dict['e_euler']: TotalErrorGraph('Euler\'s method', ExactGraph, EulerGraph),
-            self.check_box_dict['e_eim']: TotalErrorGraph('Euler\'s imp. method', ExactGraph, EulerImGraph),
-            self.check_box_dict['e_rk']: TotalErrorGraph('Runge-Kutta method', ExactGraph, RungeKuttaGraph)}
+            self.check_box_dict['e_euler']: TotalErrorGraph('Euler\'s method', EulerGraph, ExactGraph),
+            self.check_box_dict['e_eim']: TotalErrorGraph('Euler\'s imp. method', EulerImGraph, ExactGraph),
+            self.check_box_dict['e_rk']: TotalErrorGraph('Runge-Kutta method', RungeKuttaGraph, ExactGraph)}
         self.graph_colors_dict = {
             self.check_box_dict['exact']: 'b-',
             self.check_box_dict['euler']: 'r-',

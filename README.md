@@ -1,5 +1,13 @@
 # Computational Practicum
 
+Nikita Smirnov,
+
+IU BS18-04 student
+
+November 2019
+
+
+
 
 
 ## 1. 	Analytical solution
@@ -225,5 +233,8 @@ This code does not depend on details
 
 ![image-20191115140537020](/Users/nikitasmirnov/Library/Application Support/typora-user-images/image-20191115140537020.png)
 
-![image-20191115140628208](/Users/nikitasmirnov/Library/Application Support/typora-user-images/image-20191115140628208.png)
+![image-20191116114523544](/Users/nikitasmirnov/Library/Application Support/typora-user-images/image-20191116114523544.png)
 
+![image-20191116114538912](/Users/nikitasmirnov/Library/Application Support/typora-user-images/image-20191116114538912.png)
+
+![image-20191116114554710](/Users/nikitasmirnov/Library/Application Support/typora-user-images/image-20191116114554710.png)
