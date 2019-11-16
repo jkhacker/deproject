@@ -6,18 +6,16 @@ IU BS18-04 student
 
 November 2019
 
-
+[github.com/pakrentos/deproject](github.com/pakrentos/deproject)
 
 
 
 ## 1. 	Analytical solution
 
-$$
 \begin{cases}
 y' = \frac{y^2-y}x \\
 y(1) = 0.5
 \end{cases}
-$$
 
 Let us proceed with the analytical solution of FO ODE first
 
