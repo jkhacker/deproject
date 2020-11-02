@@ -1,6 +1,7 @@
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+from utils import func_title
 
 import sys
 
@@ -204,19 +205,19 @@ class PlotCanvas(FigureCanvas):
         self.ax = self.figure.add_subplot(111)
         self.ax.set_xlabel('X axis')
         self.ax.set_ylabel('Y axis')
-        self.ax.set_title('y\'=(y^2 - y)/x')
+        self.ax.set_title(func_title())
 
     def clr(self):
         self.ax.clear()
         self.ax.set_xlabel('X axis')
         self.ax.set_ylabel('Y axis')
-        self.ax.set_title('y\'=(y^2 - y)/x')
+        self.ax.set_title(func_title())
         self.draw()
 
     def plot(self, xgrid, ygrid, label, color):
         self.ax.plot(xgrid, ygrid, color, label=label)
         self.ax.legend(fontsize='small')
-        self.ax.grid()
+        self.ax.grid(True)
         self.draw()
 
 
